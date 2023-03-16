@@ -1,6 +1,9 @@
 import { IntermediateTheme, LegacyTheme, PolyTheme } from "./def";
 import { conversions, appendKey, without } from "./utils";
 
+export const intermediateToPolyTheme = (intermediate: IntermediateTheme): PolyTheme => ({ ...intermediate, spec: 2 });
+export const polyThemeToIntermediate = (polyTheme: PolyTheme) => without(polyTheme, "spec");
+
 export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
     // Use undefined to structure the object layout
     const intermediate: IntermediateTheme = {
@@ -48,6 +51,14 @@ export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
     return intermediate;
 }
 
-export const intermediateToPolyTheme = (intermediate: IntermediateTheme): PolyTheme => ({ ...intermediate, spec: 2 });
+export const legacyToPolyTheme = (legacy: LegacyTheme) => intermediateToPolyTheme(legacyToIntermediate(legacy));
 
-// TODO: In future, consider intermediateToLegacy alongside polyThemeToIntermediate
+// export function convert(theme: PolyTheme | LegacyTheme) {
+//     if ("theme_color_map" in theme) {
+//         console.log("detected legacy theme")
+//     } else if ("spec" in theme && theme.spec === 2) {
+//         console.log("detected polytheme")
+//     } else throw new Error("Unable to determine theme type")
+// }
+
+// TODO: In future, consider intermediateToLegacy
