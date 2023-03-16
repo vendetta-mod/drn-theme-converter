@@ -1,9 +1,5 @@
 import { IntermediateTheme, LegacyTheme, PolyTheme } from "./def";
-
-function appendKey(key: string) {
-    if (!key.endsWith("0") && !key.endsWith("5")) key = `${key}_500`
-    return key;
-}
+import { conversions, appendKey, without } from "./utils";
 
 export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
     // Use undefined to structure the object layout
@@ -14,9 +10,9 @@ export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
         semanticColors: legacy.theme_color_map,
     };
 
-    if (!legacy.theme_color_map.CHAT_BACKGROUND && intermediate.semanticColors)
-        intermediate.semanticColors.CHAT_BACKGROUND =
-            legacy.theme_color_map.BACKGROUND_PRIMARY;
+    if (!legacy.theme_color_map.CHAT_BACKGROUND && intermediate.semanticColors) {
+        intermediate.semanticColors.CHAT_BACKGROUND = legacy.theme_color_map.BACKGROUND_PRIMARY;
+    }
 
     if (legacy.authors && legacy.authors.length !== 0) {
         intermediate.authors = [];
@@ -38,15 +34,13 @@ export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
     if (legacy.colors) {
         intermediate.rawColors = {};
 
-        // TODO: This is bad
         // https://github.com/compilekaiten/enmity-Themes-Color-Map#colours-object
         for (let [key, value] of Object.entries(legacy.colors)) {
-            if (key.startsWith("PRIMARY_DARK")) key = appendKey(key.replace("_DARK", ""));
-            else if (key.startsWith("PRIMARY_LIGHT")) key = appendKey(key.replace("_LIGHT", ""));
-            else if (key.startsWith("BRAND_NEW")) key = appendKey(key.replace("_NEW", ""));
-            else if (key.startsWith("STATUS")) key = appendKey(key.replace("STATUS_", ""));
-            else if (key === "WHITE") key = appendKey(key);
+            for (let [start, toReplace] of Object.entries(conversions)) {
+                if (key.startsWith(start)) key = appendKey(key.replace(toReplace, ""));
+            };
 
+            if (key === "WHITE" || key === "BLACK") key = appendKey(key);
             intermediate.rawColors[key] = value;
         }
     }
@@ -54,8 +48,6 @@ export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
     return intermediate;
 }
 
-export const intermediateToPolyTheme = (
-    intermediate: IntermediateTheme
-): PolyTheme => ({ ...intermediate, spec: 2 });
+export const intermediateToPolyTheme = (intermediate: IntermediateTheme): PolyTheme => ({ ...intermediate, spec: 2 });
 
 // TODO: In future, consider intermediateToLegacy alongside polyThemeToIntermediate
