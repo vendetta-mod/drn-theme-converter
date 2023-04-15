@@ -11,6 +11,7 @@ export function legacyToIntermediate(legacy: LegacyTheme): IntermediateTheme {
         description: legacy.description,
         authors: undefined,
         semanticColors: legacy.theme_color_map,
+        rawColors: undefined,
         background: legacy.background,
     };
 
