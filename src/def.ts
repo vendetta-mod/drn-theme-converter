@@ -15,6 +15,15 @@ export interface IntermediateTheme {
      * Colors used throughout Discord.
      */
     rawColors?: Record<string, string>;
+    background?: {
+        url: string;
+        blur?: number;
+        /**
+         * The alpha value of the background.
+         * `CHAT_BACKGROUND` of semanticColors alpha value will be ignored when this is specified 
+         */
+        alpha?: number;
+    }
 }
 
 
@@ -42,6 +51,11 @@ export interface LegacyTheme {
      */
     colours?: Record<string, string>;
     unsafe_colors?: Record<string, string>;
+    background?: {
+        url: string;
+        blur?: number;
+        alpha?: number;
+    }
 }
 
 export interface PolyTheme extends IntermediateTheme {
